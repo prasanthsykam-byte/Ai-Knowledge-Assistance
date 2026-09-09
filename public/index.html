@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Atlas — Knowledge Assistant</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <section id="auth-screen" class="auth-screen">
+      <a class="brand auth-brand" href="/"><span class="brand-mark">A</span><span>atlas</span></a>
+      <div class="auth-card">
+        <p class="eyebrow">Private knowledge, yours alone</p>
+        <h1 id="auth-title">Welcome back</h1>
+        <p id="auth-subtitle">Log in to access your knowledge dashboard.</p>
+        <form id="auth-form" class="auth-form">
+          <label>Email<input id="email" type="email" autocomplete="email" required placeholder="you@example.com" /></label>
+          <label>Password<input id="password" type="password" autocomplete="current-password" required minlength="8" placeholder="At least 8 characters" /></label>
+          <label id="confirm-field" hidden>Confirm password<input id="confirm-password" type="password" autocomplete="new-password" minlength="8" placeholder="Repeat your password" /></label>
+          <p id="auth-error" class="auth-error" role="alert"></p>
+          <button id="auth-submit" class="auth-submit" type="submit">Log in <span>→</span></button>
+        </form>
+        <p class="auth-switch"><span id="switch-prompt">New to Atlas?</span> <button id="switch-auth" type="button">Create an account</button></p>
+      </div>
+    </section>
+
+    <main id="app-shell" class="app-shell" hidden>
+      <aside class="sidebar">
+        <a class="brand" href="/"><span class="brand-mark">A</span><span>atlas</span></a>
+        <div class="dashboard-heading"><div><div class="side-label">Your dashboard</div><strong>Uploaded files</strong></div><span id="file-count" class="file-count">0</span></div>
+        <section id="document-list" class="document-list" aria-live="polite"><p class="empty-docs">No sources yet</p></section>
+        <label class="upload-button" for="files"><span>+</span> Add knowledge</label>
+        <input id="files" type="file" multiple accept=".txt,.md,.csv,.json,.pdf,.docx,.xlsx" hidden />
+        <p class="format-note">PDF · Word · Excel · CSV<br />Text · Markdown · JSON</p>
+        <div class="account-panel"><div class="avatar" id="user-initial">A</div><div><strong id="user-email"></strong><button id="logout" type="button">Log out</button></div></div>
+      </aside>
+      <section class="workspace">
+        <header><div><p class="eyebrow">Your private research space</p><h2>Knowledge assistant</h2></div><span id="status" class="status">Ready</span></header>
+        <div id="empty-state" class="empty-state">
+          <div class="orb">✦</div>
+          <h1>Ask anything about<br />your knowledge.</h1>
+          <p>Upload a source to your dashboard, then use natural language to find answers across it.</p>
+          <label class="primary-button" for="files">Add your first file <span>→</span></label>
+        </div>
+        <section id="conversation" class="conversation" aria-live="polite"></section>
+        <form id="question-form" class="question-bar">
+          <input id="question" autocomplete="off" placeholder="Ask about your knowledge…" aria-label="Question" />
+          <button type="submit" aria-label="Send question">↑</button>
+        </form>
+      </section>
+    </main>
+    <template id="doc-template"><article class="document"><div class="doc-icon">▤</div><div><strong></strong><small></small></div><button title="Delete file" aria-label="Delete file">×</button></article></template>
+    <script src="/app.js"></script>
+  </body>
+</html>
