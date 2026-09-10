@@ -13,7 +13,7 @@ import ExcelJS from 'exceljs';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 const port = process.env.PORT || 3000;
-const dataDir = path.join(__dirname, 'data');
+const dataDir = process.env.VERCEL ? path.join('/tmp', 'atlas-data') : path.join(__dirname, 'data');
 const usersFile = path.join(dataDir, 'users.json');
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 25 * 1024 * 1024 } });
 const knowledge = new Map();
