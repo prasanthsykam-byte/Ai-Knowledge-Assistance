@@ -29,10 +29,12 @@ const setStatus = (text, busy = false) => { status.textContent = text; status.cl
 
 async function request(url, options = {}) {
   const response = await fetch(url, options);
-  const data = response.status === 204 ? null : await response.json();
+  const body = response.status === 204 ? '' : await response.text();
+  let data = null;
+  try { data = body ? JSON.parse(body) : null; } catch { data = { error: body || 'The server returned an invalid response.' }; }
   if (!response.ok) {
     if (response.status === 401 && !url.startsWith('/api/auth/')) showAuth();
-    throw new Error(data?.error || 'Something went wrong.');
+    throw new Error(data.error || `Request failed (${response.status}).`);
   }
   return data;
 }
