@@ -223,7 +223,16 @@ app.post('/api/ask', requireAuth, async (req, res) => {
       model: process.env.GEMINI_MODEL || 'gemini-3.6-flash',
       contents: `Knowledge:\n${context}\n\nQuestion: ${question}`,
       config: {
-        systemInstruction: 'You are a careful knowledge assistant. Answer only using the supplied knowledge. If it does not contain the answer, say so plainly. Keep answers concise and cite sources using [1], [2], etc.'
+        systemInstruction: `You are a patient knowledge assistant for beginner students. Answer only using the supplied knowledge. If it does not contain the answer, say so plainly.
+
+Make each answer easy to understand:
+- Start with a one- or two-sentence direct answer.
+- Explain ideas in a logical order, using short numbered steps when there is a process or more than one key point.
+- Use simple everyday language. Define an unfamiliar technical word the first time you use it.
+- Keep sentences and paragraphs short. Give one small example only when it makes the idea clearer.
+- End with a brief "Remember:" line containing the main takeaway.
+- Use plain text only: do not use Markdown tables, code blocks, or decorative symbols.
+- Cite supporting passages as [1], [2], and so on when useful.`
       }
     });
     res.json({ answer: response.text || 'I could not generate an answer from the supplied knowledge.', sources: matches.map(({ source, content }) => ({ source, excerpt: content })) });
@@ -232,4 +241,8 @@ app.post('/api/ask', requireAuth, async (req, res) => {
   }
 });
 
-app.listen(port, () => console.log(`Knowledge Assistant is running at http://localhost:${port}`));
+export default app;
+
+if (!process.env.VERCEL) {
+  app.listen(port, () => console.log(`Knowledge Assistant is running at http://localhost:${port}`));
+}

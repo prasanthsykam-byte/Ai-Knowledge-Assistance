@@ -90,7 +90,7 @@ function addMessage(kind, content, sources = []) {
   const card = document.createElement('article');
   card.className = `message ${kind}`;
   const sourceMarkup = sources.length ? `<details><summary>Sources (${sources.length})</summary>${sources.map((source) => `<div class="source"><b>${escapeHtml(source.source)}</b><p>${escapeHtml(source.excerpt)}</p></div>`).join('')}</details>` : '';
-  card.innerHTML = `<div class="message-label">${kind === 'user' ? 'You' : 'Atlas'}</div><div class="message-content">${escapeHtml(content).replace(/\n/g, '<br>')}</div>${sourceMarkup}`;
+  card.innerHTML = `<div class="message-label">${kind === 'user' ? 'You' : 'Atlas'}</div><div class="message-content ${kind === 'assistant' ? 'beginner-answer' : ''}">${escapeHtml(content).replace(/\n/g, '<br>')}</div>${sourceMarkup}`;
   conversation.append(card);
   card.scrollIntoView({ behavior: 'smooth', block: 'end' });
 }
