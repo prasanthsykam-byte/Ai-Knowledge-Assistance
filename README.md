@@ -15,7 +15,7 @@ A Python and Streamlit application for uploading study material and asking quest
 | Database | SQLite | Store users, document metadata, and extracted text |
 | File parsing | `pypdf`, `python-docx`, `openpyxl` | Read PDF, DOCX, and XLSX files |
 | Configuration | `python-dotenv` | Load `GEMINI_API_KEY` and other environment variables |
-| Deployment | Streamlit Community Cloud, Render, or Railway | Host the Streamlit application |
+| Deployment | Streamlit Community Cloud or Render | Host the Streamlit application |
 | Version control | Git and GitHub | Track and publish source code |
 
 ## Run locally
@@ -55,6 +55,19 @@ vectorstore/            ChromaDB persistence
 
 ## Deployment
 
-Deploy `app.py` to Streamlit Community Cloud, Render, or Railway. Set the start command to `streamlit run app.py --server.address 0.0.0.0 --server.port $PORT` where the platform requires one. Add `GEMINI_API_KEY` and optionally `GEMINI_MODEL` to the host's secret/environment settings.
+### Recommended: Render
+
+1. Create a new **Web Service** in Render and connect this GitHub repository.
+2. Select the Python runtime.
+3. Set the build command to `pip install -r requirements.txt`.
+4. Set the start command to `streamlit run app.py --server.address 0.0.0.0 --server.port $PORT`.
+5. Add `GEMINI_API_KEY` and optionally `GEMINI_MODEL` under **Environment Variables**.
+6. Deploy the service.
+
+Streamlit Community Cloud is also supported by selecting `app.py` as the application entrypoint and adding `GEMINI_API_KEY` under the app's secrets.
+
+### Vercel note
+
+Vercel does not run Streamlit applications directly because Streamlit requires a persistent Python web process. Do not deploy this repository as a Vercel serverless function. To use Vercel, split the system into a Vercel frontend and a separate Python backend hosted on Render or another Python service; the current project is intentionally deployed as one Streamlit service instead.
 
 SQLite, uploaded document text, and ChromaDB data are stored locally in `data/` and `vectorstore/`, both ignored by Git. For multiple replicas or durable production storage, replace SQLite with PostgreSQL and ChromaDB persistence with a managed vector database or shared volume.
