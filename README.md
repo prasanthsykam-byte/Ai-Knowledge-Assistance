@@ -55,14 +55,6 @@ vectorstore/            ChromaDB persistence
 
 ## Deployment
 
-### Recommended: Streamlit Community Cloud
-
-1. Open [share.streamlit.io](https://share.streamlit.io/) and connect your GitHub account.
-2. Select this repository and the `master` branch.
-3. Set the main file path to `app.py`.
-4. Add `GEMINI_API_KEY` and optionally `GEMINI_MODEL` under the app's secrets.
-5. Click **Deploy**.
-
-For Render, use the start command `streamlit run app.py --server.address 0.0.0.0 --server.port $PORT` and add the same environment variables.
+Deploy on [Streamlit Community Cloud](https://share.streamlit.io/) by selecting this GitHub repository, the `master` branch, and `app.py` as the main file. Add `GEMINI_API_KEY` in the app's secrets, then click **Deploy**.
 
 SQLite, uploaded document text, and ChromaDB data are stored locally in `data/` and `vectorstore/`, both ignored by Git. For multiple replicas or durable production storage, replace SQLite with PostgreSQL and ChromaDB persistence with a managed vector database or shared volume.
