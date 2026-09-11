@@ -1,34 +1,60 @@
 # Atlas Knowledge Assistant
 
-A local web app that lets someone upload a set of documents and ask questions grounded in those documents.
+A Python and Streamlit application for uploading study material and asking questions grounded in that material.
 
-## Accounts and file dashboard
+## Tech stack
 
-Create an account or log in before uploading files. Passwords are stored locally as salted password hashes in `data/users.json`; session cookies are HTTP-only and last up to seven days (or until the app restarts). Each uploaded source belongs only to the signed-in account that added it. The dashboard shows that account's files and provides a delete control that removes the extracted data permanently.
+| Layer | Technology | Purpose |
+| --- | --- | --- |
+| Language | Python 3.12+ | Application development |
+| Frontend | Streamlit | Web interface, authentication flow, uploads, and chat |
+| RAG framework | LangChain | Document splitting, retrieval, prompts, and model integration |
+| Embeddings | Hugging Face Sentence Transformers (`all-MiniLM-L6-v2`) | Convert document chunks and questions into vectors |
+| Vector database | ChromaDB | Store and search document embeddings per user |
+| LLM | Google Gemini API | Generate answers from retrieved document context |
+| Database | SQLite | Store users, document metadata, and extracted text |
+| File parsing | `pypdf`, `python-docx`, `openpyxl` | Read PDF, DOCX, and XLSX files |
+| Configuration | `python-dotenv` | Load `GEMINI_API_KEY` and other environment variables |
+| Deployment | Streamlit Community Cloud, Render, or Railway | Host the Streamlit application |
+| Version control | Git and GitHub | Track and publish source code |
 
-Sources uploaded before accounts were enabled are intentionally not assigned to any account and will not appear in a dashboard.
+## Run locally
 
-## What it handles
+1. Create a virtual environment: `python -m venv .venv`
+2. Activate it on Windows: `.venv\Scripts\Activate.ps1`
+3. Install dependencies: `pip install -r requirements.txt`
+4. Copy `.env.example` to `.env`.
+5. Add your Google AI Studio key as `GEMINI_API_KEY`.
+6. Start the app: `streamlit run app.py`
 
-- Text and Markdown: `.txt`, `.md`
-- Structured data: `.csv`, `.json`
-- Documents: `.pdf`, `.docx`
-- Spreadsheets: `.xlsx`
+The app opens at `http://localhost:8501`. The same `GEMINI_API_KEY` environment variable works locally and in deployment secrets.
 
-Uploads are converted to text locally and stored under `data/`, which is ignored by Git. The original files are not retained. When AI answering is enabled, the assistant sends only the selected relevant passages and the question to Gemini; without a key, it keeps everything local and shows those passages directly.
+## Features
 
-## Run it
+- Email/password accounts with salted `scrypt` password hashes
+- Per-user document lists and delete controls
+- TXT, Markdown, CSV, JSON, PDF, DOCX, and XLSX extraction
+- Sentence Transformer embeddings persisted in ChromaDB
+- LangChain similarity retrieval before Gemini generation
+- Source passages shown with every answer
+- 25 MB limit per file
 
-1. Install dependencies: `npm install`
-2. Copy `.env.example` to `.env`.
-3. Put your Google AI Studio key in `.env` as `GEMINI_API_KEY`. Do not put it in browser code or commit the file.
-4. Start the app: `npm run dev`
-5. Open `http://localhost:3000`
+## Project structure
 
-Without a key, upload and source retrieval still work; the app shows the relevant passages instead of generating a final answer.
+```text
+app.py                  Streamlit entrypoint and chat UI
+rag/
+	qa.py                 LangChain retrieval and Gemini answer generation
+	vector_store.py       Sentence Transformer embeddings and ChromaDB
+utils/
+	database.py           SQLite users and document metadata
+	document_loader.py    PDF, TXT, DOCX, and legacy format extraction
+data/                   Local SQLite data
+vectorstore/            ChromaDB persistence
+```
 
-## Important limits of this first version
+## Deployment
 
-- It accepts text-based PDFs. Scanned PDFs, images, audio, video, and handwritten notes need an OCR/transcription stage before they can be answered from.
-- Each upload is limited to 25 MB and up to 10 files may be added per upload action.
-- This is a single-user local application. For a shared or production system, add login, per-user storage, encrypted persistence, background ingestion, embeddings/vector search, and a managed database.
+Deploy `app.py` to Streamlit Community Cloud, Render, or Railway. Set the start command to `streamlit run app.py --server.address 0.0.0.0 --server.port $PORT` where the platform requires one. Add `GEMINI_API_KEY` and optionally `GEMINI_MODEL` to the host's secret/environment settings.
+
+SQLite, uploaded document text, and ChromaDB data are stored locally in `data/` and `vectorstore/`, both ignored by Git. For multiple replicas or durable production storage, replace SQLite with PostgreSQL and ChromaDB persistence with a managed vector database or shared volume.
