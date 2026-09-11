@@ -15,7 +15,7 @@ A Python and Streamlit application for uploading study material and asking quest
 | Database | SQLite | Store users, document metadata, and extracted text |
 | File parsing | `pypdf`, `python-docx`, `openpyxl` | Read PDF, DOCX, and XLSX files |
 | Configuration | `python-dotenv` | Load `GEMINI_API_KEY` and other environment variables |
-| Deployment | Streamlit Community Cloud or Render | Host the Streamlit application |
+| Deployment | Streamlit Community Cloud | Host the Streamlit application |
 | Version control | Git and GitHub | Track and publish source code |
 
 ## Run locally
@@ -55,19 +55,14 @@ vectorstore/            ChromaDB persistence
 
 ## Deployment
 
-### Recommended: Render
+### Recommended: Streamlit Community Cloud
 
-1. Create a new **Web Service** in Render and connect this GitHub repository.
-2. Select the Python runtime.
-3. Set the build command to `pip install -r requirements.txt`.
-4. Set the start command to `streamlit run app.py --server.address 0.0.0.0 --server.port $PORT`.
-5. Add `GEMINI_API_KEY` and optionally `GEMINI_MODEL` under **Environment Variables**.
-6. Deploy the service.
+1. Open [share.streamlit.io](https://share.streamlit.io/) and connect your GitHub account.
+2. Select this repository and the `master` branch.
+3. Set the main file path to `app.py`.
+4. Add `GEMINI_API_KEY` and optionally `GEMINI_MODEL` under the app's secrets.
+5. Click **Deploy**.
 
-Streamlit Community Cloud is also supported by selecting `app.py` as the application entrypoint and adding `GEMINI_API_KEY` under the app's secrets.
-
-### Vercel note
-
-Vercel does not run Streamlit applications directly because Streamlit requires a persistent Python web process. Do not deploy this repository as a Vercel serverless function. To use Vercel, split the system into a Vercel frontend and a separate Python backend hosted on Render or another Python service; the current project is intentionally deployed as one Streamlit service instead.
+For Render, use the start command `streamlit run app.py --server.address 0.0.0.0 --server.port $PORT` and add the same environment variables.
 
 SQLite, uploaded document text, and ChromaDB data are stored locally in `data/` and `vectorstore/`, both ignored by Git. For multiple replicas or durable production storage, replace SQLite with PostgreSQL and ChromaDB persistence with a managed vector database or shared volume.
