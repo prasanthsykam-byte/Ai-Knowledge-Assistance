@@ -31,7 +31,7 @@ def answer_question(user_id: int, question: str) -> tuple[str, list[dict[str, st
     if not api_key:
         return "AI answering is not configured. Add GEMINI_API_KEY to your environment and restart the app.", sources
     model = ChatGoogleGenerativeAI(
-        model=os.getenv("GEMINI_MODEL", "gemini-2.5-flash"),
+        model=os.getenv("GEMINI_MODEL", "gemini-3.6-flash"),
         google_api_key=api_key,
         temperature=0.2,
     )
